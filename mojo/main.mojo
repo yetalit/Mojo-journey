@@ -13,15 +13,20 @@ struct myClass:
     var prop2: String
     var prop3: Bool
 
+    # inout keyword is like passing by reference
     fn __init__(inout self):
         self.prop1 = 0
         self.prop2 = ''
         self.prop3 = False
 
-    fn setProp1 (inout self, value: Int):
+    # owned keyword is like passing by value
+    fn setProp1 (inout self, owned value: Int):
+        value += 1
         self.prop1 = value
-    fn setProp2 (inout self, value: String):
+    # borrowed keyword is like passing a constant argument (immutable)
+    fn setProp2 (inout self, borrowed value: String):
         self.prop2 = value
+    # fn function arguments are treated as borrowed by default
     fn setProp3 (inout self, value: Bool):
         self.prop3 = value
         
@@ -46,7 +51,10 @@ fn main():
 
     var myclass = myClass()
     print(myclass.prop1, myclass.prop2, myclass.prop3)
-    myClass.setProp1(myclass, 3)
-    myClass.setProp2(myclass, 'helloooo')
-    myClass.setProp3(myclass, True)
+    let p1: Int = 2
+    let p2: String = 'helloooo'
+    let p3: Bool = True
+    myClass.setProp1(myclass, p1)
+    myClass.setProp2(myclass, p2)
+    myClass.setProp3(myclass, p3)
     print(myclass.prop1, myclass.prop2, myclass.prop3)
