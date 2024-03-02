@@ -8,6 +8,9 @@
 from python import Python
 from python import PythonObject
 
+from mypackage.mymodule import MyPair1
+from testpack.mymodule import MyPair2
+
 struct myClass:
     var prop1: Int
     var prop2: String
@@ -58,3 +61,7 @@ fn main():
     myClass.setProp2(myclass, p2)
     myClass.setProp3(myclass, p3)
     print(myclass.prop1, myclass.prop2, myclass.prop3)
+    let mine1 = MyPair1(4, 8)
+    mine1.dump()
+    let mine2 = MyPair1(16, 32)
+    mine2.dump()
