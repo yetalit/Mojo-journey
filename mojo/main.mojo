@@ -1,4 +1,4 @@
-# let : immutable (runtime)
+# let !!!deprecated!!! : immutable (runtime)
 # var : mutable
 # alias : immutable (compile time)
 
@@ -34,16 +34,19 @@ struct myClass:
         self.prop3 = value
         
 
+fn add[datatype: DType, length: Int](a: SIMD[datatype, length], b: SIMD[datatype, length]) -> SIMD[datatype, length]:
+    return a + b
+
 fn main():
     try:
-        let py = Python.import_module('builtins')
-        let np = Python.import_module('numpy')
+        var py = Python.import_module('builtins')
+        var np = Python.import_module('numpy')
 
-        let user_input = py.input('what is your fav color? ')
+        var user_input = py.input('what is your fav color? ')
         print('your fav color is', user_input)
 
         # use of python lists in mojo
-        let x: PythonObject = [1,2,3,4,5]
+        var x: PythonObject = [1,2,3,4,5]
         for i in range(x.__len__()):
             print(x[i])
 
@@ -54,14 +57,22 @@ fn main():
 
     var myclass = myClass()
     print(myclass.prop1, myclass.prop2, myclass.prop3)
-    let p1: Int = 2
-    let p2: String = 'helloooo'
-    let p3: Bool = True
+    alias p1: Int = 2
+    alias p2: String = 'helloooo'
+    alias p3: Bool = True
     myClass.setProp1(myclass, p1)
     myClass.setProp2(myclass, p2)
     myClass.setProp3(myclass, p3)
     print(myclass.prop1, myclass.prop2, myclass.prop3)
-    let mine1 = MyPair1(4, 8)
+
+    alias mine1 = MyPair1(4, 8)
     mine1.dump()
-    let mine2 = MyPair1(16, 32)
+    alias mine2 = MyPair1(16, 32)
     mine2.dump()
+
+    # SIMD: Single Instruction Multiple Data
+    # simd width must be power of 2
+    alias x = SIMD[DType.float64, 8](2, 4, 8, 16, 32, 64, 128, 256)
+    print(x.__len__())
+    print(0.25 * x)
+    print(add(x,x))
