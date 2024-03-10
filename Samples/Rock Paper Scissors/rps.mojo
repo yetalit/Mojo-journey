@@ -1,20 +1,17 @@
 from python import Python
+from python import PythonObject
 
-fn check_play_status() -> Bool:
+fn check_play_status(borrowed py: PythonObject) raises -> Bool:
 	while True:
-		try:
-			var py = Python.import_module('builtins')
-			var response: String = str(py.input('Do you wish to play again? [y/n]: '))
-			if response != 'y' and response != 'n':
-				print('y or n only')
-				continue
+		var response: String = str(py.input('Do you wish to play again? [y/n]: '))
+		if response != 'y' and response != 'n':
+			print('y or n only')
+			continue
 
-			if response == 'y':
-				return True
-			else:
-				return False
-		except:
-			print('Error importing modules!')
+		if response == 'y':
+			return True
+		else:
+			return False
 
 
 fn main():
@@ -51,7 +48,7 @@ fn main():
 				print('Paper beats rock, I win!')
 			else:
 				print('You win!')
-			play = check_play_status()
+			play = check_play_status(py)
 	except:
 		print('Error importing modules!')
 		
