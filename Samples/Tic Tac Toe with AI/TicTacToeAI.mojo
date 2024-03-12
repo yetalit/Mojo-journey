@@ -19,7 +19,7 @@ fn computerMove(inout board: InlinedFixedVector[StringLiteral], borrowed pSymbol
                 bestScore = score
                 bestMove = i
 
-    insertValue(board, bestMove, turn)
+    insertValue(board, bestMove)
 
 
 fn miniMax(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral, borrowed maximizing: Bool) raises -> Int:
@@ -70,11 +70,11 @@ fn displayBoard(borrowed board: InlinedFixedVector[StringLiteral]) raises:
     print('---------------------------------------')
 
 
-fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position: Int, borrowed value: StringLiteral) raises:
+fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position: Int) raises:
     if board[position] == " ":
-        board[position] = value
+        board[position] = turn
 
-        if checkForWin(board, value):
+        if checkForWin(board, turn):
             displayBoard(board)
             print(turn, "has won the game.")
             play = False
@@ -84,7 +84,7 @@ fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position
             print("This game is a draw.")
             play = False
 
-        if value == "X":
+        if turn == "X":
             turn = "O"
 
         else:
@@ -92,7 +92,6 @@ fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position
 
     else:
         print("Error: position is already occupied.")
-        turn = value
 
 
 fn checkForDraw(owned board: InlinedFixedVector[StringLiteral]) -> Bool:
@@ -103,37 +102,37 @@ fn checkForDraw(owned board: InlinedFixedVector[StringLiteral]) -> Bool:
     return True
 
 
-fn checkForWin(borrowed board: InlinedFixedVector[StringLiteral], borrowed player: StringLiteral) raises -> Bool:
+fn checkForWin(borrowed board: InlinedFixedVector[StringLiteral], borrowed cPlayer: StringLiteral) raises -> Bool:
     # horizontal 1
-    if board[0] == board[1] and board[1] == board[2] and board[2] == player:
+    if board[0] == board[1] and board[1] == board[2] and board[2] == cPlayer:
         return True
 
     # horizontal 2
-    if board[3] == board[4] and board[4] == board[5] and board[5] == player:
+    if board[3] == board[4] and board[4] == board[5] and board[5] == cPlayer:
         return True
 
     # horizontal 3
-    elif board[6] == board[7] and board[7] == board[8] and board[8] == player:
+    elif board[6] == board[7] and board[7] == board[8] and board[8] == cPlayer:
         return True
 
     # vertical 1
-    elif board[0] == board[3] and board[3] == board[6] and board[6] == player:
+    elif board[0] == board[3] and board[3] == board[6] and board[6] == cPlayer:
         return True
 
     # vertical 2
-    elif board[1] == board[4] and board[4] == board[7] and board[7] == player:
+    elif board[1] == board[4] and board[4] == board[7] and board[7] == cPlayer:
         return True
 
     # vertical 3
-    elif board[2] == board[5] and board[5] == board[8] and board[8] == player:
+    elif board[2] == board[5] and board[5] == board[8] and board[8] == cPlayer:
         return True
 
     # diagonal 1
-    elif board[0] == board[4] and board[4] == board[8] and board[8] == player:
+    elif board[0] == board[4] and board[4] == board[8] and board[8] == cPlayer:
         return True
 
     # diagonal 2
-    elif board[2] == board[4] and board[4] == board[6] and board[6] == player:
+    elif board[2] == board[4] and board[4] == board[6] and board[6] == cPlayer:
         return True
 
     # no win
@@ -148,8 +147,8 @@ fn main():
     for i in range(9):
         board[i] = " "
     random.seed()  # Seed to generate random numbers each time
-    # Randomly choose the first player (between 0 and 1)
-    var pSymbol: StringLiteral = "O" if random.random_ui64(0, 1) else "X"
+    # Player's symbol
+    var pSymbol: StringLiteral = "O" if random.random_ui64(0, 1) else "X"  # Randomly choose the first player (0:X, 1:O)
     var firstMove: UInt64 = 0
 
     try:
@@ -159,6 +158,7 @@ fn main():
 
         while play:
             if turn != pSymbol:
+                # AI's turn
                 if firstMove == 10:
                     computerMove(board, pSymbol)
                 else:
@@ -166,17 +166,18 @@ fn main():
                     var rand: UInt64 = firstMove
                     while rand == firstMove:
                         rand = random.random_ui64(1, 9)  # Generate an unsigned random number between 1 to 9
-                    insertValue(board, rand.to_int() - 1, turn)
+                    insertValue(board, rand.to_int() - 1)
                     firstMove = 10
                 displayBoard(board)
             else:
+                # Player's turn
                 try:
                     # Convert user input to String then to int
                     var position: Int = atol(str(py.input("Enter the position to place " + str(turn) + ": ")))
                     if position >= 1 and position <= 9:
                         if firstMove == 0:
                             firstMove = position
-                        insertValue(board, position - 1, turn)
+                        insertValue(board, position - 1)
                         displayBoard(board)
                     else:
                         print("Enter a number between 1 to 9...")
