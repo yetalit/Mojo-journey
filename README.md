@@ -1,6 +1,6 @@
 A beginners\' level repository to get started with Mojo programming
 language.\
-**Used Mojo version: 0.7.0**\
+**Used Mojo versions: 24.1 / 0.7.0**\
 There are two folders:
 - mojo folder is for learning the basics and its contents are created by
 the help of the below YouTube tutorial:\
