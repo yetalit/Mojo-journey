@@ -10,7 +10,7 @@ fn main():
             # Split words by SPACE
             words = f.read().split(' ')
     except:
-        print('Error opening File.')
+        print('Error opening "sample_words" text file.')
         return
     random.seed()  # Seed to generate random numbers each time
     var randNums = DynamicVector[UInt64]()  # Chosen random words' indexes
