@@ -25,10 +25,8 @@ fn computerMove(inout board: InlinedFixedVector[StringLiteral], borrowed pSymbol
 fn miniMax(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral, borrowed maximizing: Bool) raises -> Int:
     if checkForWin(board, turn):
         return 1
-
     elif checkForWin(board, pSymbol):
         return -1
-
     elif checkForDraw(board):
         return 0
 
@@ -45,7 +43,6 @@ fn miniMax(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: Str
                     bestScore = score
 
         return bestScore
-
     else:
         var bestScore: Int = 10
 
@@ -75,21 +72,16 @@ fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position
         board[position] = turn
 
         if checkForWin(board, turn):
-            displayBoard(board)
             print(turn, "has won the game.")
             play = False
-
-        if checkForDraw(board):
-            displayBoard(board)
+        elif checkForDraw(board):
             print("This game is a draw.")
             play = False
-
-        if turn == "X":
-            turn = "O"
-
         else:
-            turn = "X"
-
+            if turn == "X":
+                turn = "O"
+            else:
+                turn = "X"
     else:
         print("Error: position is already occupied.")
 
@@ -112,32 +104,31 @@ fn checkForWin(borrowed board: InlinedFixedVector[StringLiteral], borrowed cPlay
         return True
 
     # horizontal 3
-    elif board[6] == board[7] and board[7] == board[8] and board[8] == cPlayer:
+    if board[6] == board[7] and board[7] == board[8] and board[8] == cPlayer:
         return True
 
     # vertical 1
-    elif board[0] == board[3] and board[3] == board[6] and board[6] == cPlayer:
+    if board[0] == board[3] and board[3] == board[6] and board[6] == cPlayer:
         return True
 
     # vertical 2
-    elif board[1] == board[4] and board[4] == board[7] and board[7] == cPlayer:
+    if board[1] == board[4] and board[4] == board[7] and board[7] == cPlayer:
         return True
 
     # vertical 3
-    elif board[2] == board[5] and board[5] == board[8] and board[8] == cPlayer:
+    if board[2] == board[5] and board[5] == board[8] and board[8] == cPlayer:
         return True
 
     # diagonal 1
-    elif board[0] == board[4] and board[4] == board[8] and board[8] == cPlayer:
+    if board[0] == board[4] and board[4] == board[8] and board[8] == cPlayer:
         return True
 
     # diagonal 2
-    elif board[2] == board[4] and board[4] == board[6] and board[6] == cPlayer:
+    if board[2] == board[4] and board[4] == board[6] and board[6] == cPlayer:
         return True
 
     # no win
-    else:
-        return False
+    return False
 
 fn main():
     play = True
