@@ -5,6 +5,7 @@ from collections.vector import DynamicVector
 fn main():
     alias wordCount: Int = 22  # Number of words
     var words = DynamicVector[String]()
+    var txt: String = ""
     try:
         with open("sample_words.txt", "r") as f:
             # Split words by SPACE
@@ -13,22 +14,21 @@ fn main():
         print('Error opening "sample_words" text file.')
         return
     random.seed()  # Seed to generate random numbers each time
-    var randNums = DynamicVector[UInt64]()  # Chosen random words' indexes
-    for i in range(wordCount):
+    var iter: Int = 0
+    var prevIndex: UInt64 = 0
+    while iter < wordCount:
         var randNum: UInt64 = random.random_ui64(0, 849)  # Generate an unsigned random number between 0 to 849
-        for j in range(len(randNums)):
-            # Check if it's already chosen
-            if randNums[j] == randNum:
-                i -= 1
-                break
-        randNums.append(randNum)
-
-    var txt: String = ""
-
-    for i in range(wordCount):
-        txt += words[randNums[i].to_int()]
-        if i != wordCount - 1:
+        if iter > 0:
+            # Check if chosen index and previous index are not the same
+            if randNum == prevIndex:
+                continue
+        prevIndex = randNum
+        # Add word to the text
+        txt += words[randNum.to_int()]
+        if iter != wordCount - 1:
             txt += " "
+        iter += 1
+
     var txtSize: Int = len(txt)
     try:
         var py = Python.import_module('builtins')
