@@ -43,7 +43,7 @@ struct AVLTree:
         Return a cute trees visualisation
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> print(tree.__str__())
     >>>        4
     >>>       / \
@@ -58,7 +58,7 @@ struct AVLTree:
         Return AVLTree's height
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> height = tree.height()
     >>> print(height)
     >>> 2
@@ -69,7 +69,7 @@ struct AVLTree:
         Return Node in node's subtree with this key
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.find(4)
     >>> print(tree.find(4))
     >>> 4
@@ -82,7 +82,7 @@ struct AVLTree:
         Return biggest key in AVLTree
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.find_biggest()
     >>> 6
 
@@ -91,7 +91,7 @@ struct AVLTree:
         Return smallest key in AVLTree
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.find_biggest()
     >>> 1
 
@@ -104,13 +104,13 @@ struct AVLTree:
             2 == postorder
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.as_vector(0)
-    >>> [4, 2, 1, 3, 5, 6]
+    >>> <4, 2, 1, 3, 5, 6>
     >>> tree.as_vector(1)
-    >>> [1, 2, 3, 4, 5, 6]
+    >>> <1, 2, 3, 4, 5, 6>
     >>> tree.as_vector(2)
-    >>> [1, 3, 2, 6, 5, 4]
+    >>> <1, 3, 2, 6, 5, 4>
 
 
     remove(key)
@@ -118,7 +118,7 @@ struct AVLTree:
         return AVLTrees root without node, which val is equal key
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.remove(3)
     >>> print(tree)
     >>>        4
@@ -134,7 +134,7 @@ struct AVLTree:
         return kth key in node's subtree
 
         Examples::
-    >>> tree = AVLTree([1,2,3,4,5,6])
+    >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.findkth(2)
     >>> 2
     >>> tree.findkth(2,tree.rootNode.rightChild)
@@ -211,7 +211,7 @@ struct AVLTree:
         if not self.rootNode:
             return DynamicVector[Int]()
         
-        debug_assert((type != 0 and type != 1 and type != 2), 'wrong type value')
+        debug_assert(type in Set[Int](0, 1, 2), 'wrong type value')
         
         if type == 0:
             return self.preorder(self.rootNode)
