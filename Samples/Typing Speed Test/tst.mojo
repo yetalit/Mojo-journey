@@ -18,10 +18,9 @@ fn main():
     var prevIndex: UInt64 = 0
     while iter < wordCount:
         var randNum: UInt64 = random.random_ui64(0, 849)  # Generate an unsigned random number between 0 to 849
-        if iter > 0:
-            # Check if chosen index and previous index are not the same
-            if randNum == prevIndex:
-                continue
+        # Skip if chosen index and previous index are the same
+        if iter > 0 and randNum == prevIndex:
+            continue
         prevIndex = randNum
         # Add word to the text
         txt += words[randNum.to_int()]
