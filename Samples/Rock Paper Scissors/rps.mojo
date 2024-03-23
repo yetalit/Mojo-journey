@@ -22,6 +22,8 @@ fn main():
 		var py = Python.import_module('builtins')
 		var np = Python.import_module('numpy')
 		
+		var choices = np.array(['r', 'p', 's'])
+		
 		while play:
 			var user_choice: String = str(py.input('Choose your weapon'
 							   ' [r]ock, [p]aper, or [s]cissors: '))
@@ -34,9 +36,8 @@ fn main():
 			print('You chose:', user_choice)
 
 			var randNum: UInt64 = random.random_ui64(0, 2)  # Generate an unsigned random number between 0 to 2
-			var choices = np.array(['r', 'p', 's'])
 			var opp_choice: String = choices[randNum]
-			print('I chose:', choices[randNum])
+			print('I chose:', opp_choice)
 
 			if opp_choice == user_choice:
 				print('Tie!')

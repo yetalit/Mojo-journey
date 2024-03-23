@@ -50,7 +50,7 @@ struct AVLTree:
     >>>      /   \
     >>>     /     \
     >>>    2       5
-    >>>   / \\       \
+    >>>   / \\      \
     >>>  1   3       6
 
     height
@@ -137,7 +137,7 @@ struct AVLTree:
     >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.findkth(2)
     >>> 2
-    >>> tree.findkth(2,tree.rootNode.rightChild)
+    >>> tree.findkth(2, tree.rootNode.load().rightChild)
     >>> 6
     """
     
@@ -145,7 +145,7 @@ struct AVLTree:
     var elements_count: Int
     var rebalance_count: Int
 
-    fn __init__(inout self, h:object = []) raises:
+    fn __init__(inout self, h: object = []) raises:
         self.rootNode = Pointer[Node].get_null()
         self.elements_count = 0
         self.rebalance_count = 0
@@ -207,11 +207,9 @@ struct AVLTree:
             node = node.load().leftChild
         return node
 
-    fn as_vector(self, type: Int=1) -> DynamicVector[Int]:
+    fn as_vector(self, type: Int = 1) -> DynamicVector[Int]:
         if not self.rootNode:
             return DynamicVector[Int]()
-        
-        debug_assert(type in Set[Int](0, 1, 2), 'wrong type value')
         
         if type == 0:
             return self.preorder(self.rootNode)
@@ -642,7 +640,6 @@ struct AVLTree:
         var leftsize: Int = 0 if not root.load().leftChild else root.load().leftChild.load().size
         if leftsize >= k:
             return self.findkth(k, root.load().leftChild)
-
         elif leftsize == (k - 1):
             return root.load().key
         else:
