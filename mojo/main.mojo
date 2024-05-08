@@ -1,12 +1,11 @@
-# let !!!deprecated!!! : immutable (runtime)
 # var : mutable
 # alias : immutable (compile time)
+# let !!!deprecated!!! : immutable (runtime)
 
 # Data types: String, Int (Int8, Int16, Int32, Int64), UInt8, UInt16 ...,
 # Float16, Float32 ..., Bool
 
 from python import Python
-from python import PythonObject
 
 from mypackage.mymodule import MyPair1
 from testpack.mymodule import MyPair2
@@ -26,9 +25,11 @@ struct myClass:
     fn setProp1 (inout self, owned value: Int):
         value += 1
         self.prop1 = value
+
     # borrowed keyword is like passing a constant argument (immutable)
     fn setProp2 (inout self, borrowed value: String):
         self.prop2 = value
+        
     # fn function arguments are treated as borrowed by default
     fn setProp3 (inout self, value: Bool):
         self.prop3 = value
@@ -47,7 +48,7 @@ fn main():
 
         # use of python lists in mojo
         var x: PythonObject = [1,2,3,4,5]
-        for i in range(x.__len__()):
+        for i in range(len(x)):
             print(x[i])
 
         var arr = np.array([1,2,3,4,5])

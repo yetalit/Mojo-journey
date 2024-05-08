@@ -1,8 +1,8 @@
 from python import Python
 from collections.vector import InlinedFixedVector
+from sys import exit
 
 # Global variables are introduced in version 24.1
-var play: Bool = True
 var turn: StringLiteral = "X"
 
 fn computerMove(inout board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral) raises:
@@ -70,13 +70,14 @@ fn displayBoard(borrowed board: InlinedFixedVector[StringLiteral]) raises:
 fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position: Int) raises:
     if board[position] == " ":
         board[position] = turn
+        displayBoard(board)
 
         if checkForWin(board, turn):
             print(turn, "has won the game.")
-            play = False
+            exit(0)
         elif checkForDraw(board):
             print("This game is a draw.")
-            play = False
+            exit(0)
         else:
             if turn == "X":
                 turn = "O"
@@ -131,7 +132,6 @@ fn checkForWin(borrowed board: InlinedFixedVector[StringLiteral], borrowed cPlay
     return False
 
 fn main():
-    play = True
     # X starts first
     turn = "X"
     var board = InlinedFixedVector[StringLiteral](9)
@@ -147,7 +147,7 @@ fn main():
 
         displayBoard(board)
 
-        while play:
+        while True:
             if turn != pSymbol:
                 # AI's turn
                 if firstMove == 10:
@@ -157,9 +157,8 @@ fn main():
                     var rand: UInt64 = firstMove
                     while rand == firstMove:
                         rand = random.random_ui64(1, 9)  # Generate an unsigned random number between 1 to 9
-                    insertValue(board, rand.to_int() - 1)
+                    insertValue(board, int(rand) - 1)
                     firstMove = 10
-                displayBoard(board)
             else:
                 # Player's turn
                 try:
@@ -169,7 +168,6 @@ fn main():
                         if firstMove == 0:
                             firstMove = position
                         insertValue(board, position - 1)
-                        displayBoard(board)
                     else:
                         print("Enter a number between 1 to 9...")
                 except:

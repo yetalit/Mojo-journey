@@ -1,4 +1,5 @@
 from collections import Set
+import math
 
 @register_passable
 struct Node:
@@ -95,7 +96,7 @@ struct AVLTree:
     >>> tree.find_biggest()
     >>> 1
 
-    as_vector
+    as_list
         Args:
             type
         return AVLTrees keys in order depend on type:
@@ -105,11 +106,11 @@ struct AVLTree:
 
         Examples::
     >>> var tree = AVLTree([1,2,3,4,5,6])
-    >>> tree.as_vector(0)
+    >>> tree.as_list(0)
     >>> <4, 2, 1, 3, 5, 6>
-    >>> tree.as_vector(1)
+    >>> tree.as_list(1)
     >>> <1, 2, 3, 4, 5, 6>
-    >>> tree.as_vector(2)
+    >>> tree.as_list(2)
     >>> <1, 3, 2, 6, 5, 4>
 
 
@@ -149,7 +150,7 @@ struct AVLTree:
         self.rootNode = Pointer[Node].get_null()
         self.elements_count = 0
         self.rebalance_count = 0
-        for i in range(h.__len__()):
+        for i in range(len(h)):
             self.insert(int(h[i]))
 
     fn __del__(owned self):
@@ -207,9 +208,9 @@ struct AVLTree:
             node = node.load().leftChild
         return node
 
-    fn as_vector(self, type: Int = 1) -> DynamicVector[Int]:
+    fn as_list(self, type: Int = 1) -> List[Int]:
         if not self.rootNode:
-            return DynamicVector[Int]()
+            return List[Int]()
         
         if type == 0:
             return self.preorder(self.rootNode)
@@ -218,7 +219,7 @@ struct AVLTree:
         else:
             return self.postorder(self.rootNode)
 
-    fn preorder(self, node: Pointer[Node], owned retlst:DynamicVector[Int] = DynamicVector[Int]()) -> DynamicVector[Int]:
+    fn preorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
         retlst.append(node.load().key)
         if node.load().leftChild:
             retlst = self.preorder(node.load().leftChild, retlst)
@@ -226,7 +227,7 @@ struct AVLTree:
             retlst = self.preorder(node.load().rightChild, retlst)
         return retlst
 
-    fn inorder(self, node: Pointer[Node], owned retlst:DynamicVector[Int] = DynamicVector[Int]()) -> DynamicVector[Int]:
+    fn inorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
         if node.load().leftChild:
             retlst = self.inorder(node.load().leftChild, retlst)
         retlst.append(node.load().key)
@@ -234,7 +235,7 @@ struct AVLTree:
             retlst = self.inorder(node.load().rightChild, retlst)
         return retlst
 
-    fn postorder(self, node: Pointer[Node], owned retlst:DynamicVector[Int] = DynamicVector[Int]()) -> DynamicVector[Int]:
+    fn postorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
         if node.load().leftChild:
             retlst = self.postorder(node.load().leftChild, retlst)
         if node.load().rightChild:
@@ -658,7 +659,7 @@ struct AVLTree:
         if not start_node:
             return "Tree is empty"
         var height: Int = 2 ** (self.rootNode.load().height)
-        var level = DynamicVector[Pointer[Node]]()
+        var level = List[Pointer[Node]]()
         level.append(start_node)
         var notNullCount: Int = 1
 
@@ -673,7 +674,7 @@ struct AVLTree:
 
             out_string += level_string
 
-            var level_next = DynamicVector[Pointer[Node]]()
+            var level_next = List[Pointer[Node]]()
             notNullCount = 0
             for node in level:
                 if node[]:

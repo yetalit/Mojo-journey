@@ -1,21 +1,7 @@
 from python import Python
-from python import PythonObject
-
-fn check_play_status(borrowed py: PythonObject) raises -> Bool:
-	while True:
-		var response: String = str(py.input('Do you wish to play again? [y/n]: '))
-		if response != 'y' and response != 'n':
-			print('y or n only')
-			continue
-
-		if response == 'y':
-			return True
-		else:
-			return False
-
+from sys import exit
 
 fn main():
-	var play: Bool = True
 	random.seed()  # Seed to generate random numbers each time
 	print('Rock, Paper, Scissors - Shoot!')
 	try:
@@ -24,7 +10,7 @@ fn main():
 		
 		var choices = np.array(['r', 'p', 's'])
 		
-		while play:
+		while True:
 			var user_choice: String = str(py.input('Choose your weapon'
 							   ' [r]ock, [p]aper, or [s]cissors: '))
 			
@@ -49,9 +35,17 @@ fn main():
 				print('Paper beats rock, I win!')
 			else:
 				print('You win!')
-			play = check_play_status(py)
+
+			while True:
+				var response: String = str(py.input('Do you wish to play again? [y/n]: '))
+				if response != 'y' and response != 'n':
+					print('y or n only')
+					continue
+
+				if response == 'y':
+					break
+				else:
+					print('Thanks for playing!')
+					exit(0)
 	except:
 		print('Error importing modules!')
-		
-		
-	print('Thanks for playing!')

@@ -1,10 +1,10 @@
 from python import Python
 from time import now
-from collections.vector import DynamicVector
+import math
 
 fn main():
     alias wordCount: Int = 22  # Number of words
-    var words = DynamicVector[String]()
+    var words = List[String]()
     var txt: String = ""
     try:
         with open("sample_words.txt", "r") as f:
@@ -23,7 +23,7 @@ fn main():
             continue
         prevIndex = randNum
         # Add word to the text
-        txt += words[randNum.to_int()]
+        txt += words[int(randNum)]
         if iter != wordCount - 1:
             txt += " "
         iter += 1
@@ -44,8 +44,8 @@ fn main():
             if i == txtSize - 1:
                 break
         var letterCount: Int = math.min(len(input), txtSize)
-        var wpm: Int = math.round((letterCount / 5) / (t / 60)).to_int()
-        var acc: Int = math.round(score / txtSize * 100).to_int()
+        var wpm: Int = int(math.round((letterCount / 5) / (t / 60)))
+        var acc: Int = int(math.round(score / txtSize * 100))
         print ("WPM:", wpm)
         print ("Accuracy: " + str(acc) + "%")
     except:
