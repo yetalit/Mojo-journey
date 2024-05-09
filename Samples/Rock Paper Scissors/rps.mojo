@@ -38,14 +38,11 @@ fn main():
 
 			while True:
 				var response: String = str(py.input('Do you wish to play again? [y/n]: '))
-				if response != 'y' and response != 'n':
-					print('y or n only')
-					continue
-
 				if response == 'y':
 					break
-				else:
+				elif response == 'n':
 					print('Thanks for playing!')
 					exit(0)
+				print('y or n only')
 	except:
 		print('Error importing modules!')

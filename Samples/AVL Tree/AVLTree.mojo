@@ -1,7 +1,6 @@
 from collections import Set
 import math
 
-@register_passable
 struct Node:
     var key: Int
     var parent: Pointer[Node]
@@ -26,16 +25,16 @@ struct Node:
     
     fn max_children_height(self) -> Int:
         if self.leftChild and self.rightChild:
-            return math.max(self.leftChild.load().height, self.rightChild.load().height)
+            return math.max(self.leftChild[].height, self.rightChild[].height)
         if self.leftChild:
-            return self.leftChild.load().height
+            return self.leftChild[].height
         if self.rightChild:
-            return self.rightChild.load().height
+            return self.rightChild[].height
         return -1
 
     fn balance(self) -> Int:
-        return (self.leftChild.load().height if self.leftChild else -1) -\
-               (self.rightChild.load().height if self.rightChild else -1)
+        return (self.leftChild[].height if self.leftChild else -1) -\
+               (self.rightChild[].height if self.rightChild else -1)
 
 struct AVLTree:
     """
@@ -138,7 +137,7 @@ struct AVLTree:
     >>> var tree = AVLTree([1,2,3,4,5,6])
     >>> tree.findkth(2)
     >>> 2
-    >>> tree.findkth(2, tree.rootNode.load().rightChild)
+    >>> tree.findkth(2, tree.rootNode[].rightChild)
     >>> 6
     """
     
@@ -158,24 +157,24 @@ struct AVLTree:
             self.delTree(self.rootNode)
 
     fn delTree(self, node: Pointer[Node]):
-        if node.load().leftChild:
-            self.delTree(node.load().leftChild)
-        if node.load().rightChild:
-            self.delTree(node.load().rightChild)
+        if node[].leftChild:
+            self.delTree(node[].leftChild)
+        if node[].rightChild:
+            self.delTree(node[].rightChild)
         node.free()
 
     fn height(self) -> Int:
         if self.rootNode:
-            return self.rootNode.load().height
+            return self.rootNode[].height
         return -1
             
     fn find_in_subtree(self, key: Int, node: Pointer[Node]) -> Pointer[Node]:
         if not node:
             return Pointer[Node].get_null()  # key not found
-        if key < node.load().key:
-            return self.find_in_subtree(key, node.load().leftChild)
-        if key > node.load().key:
-            return self.find_in_subtree(key, node.load().rightChild)
+        if key < node[].key:
+            return self.find_in_subtree(key, node[].leftChild)
+        if key > node[].key:
+            return self.find_in_subtree(key, node[].rightChild)
         # key is equal to node key
         return node
         
@@ -188,24 +187,22 @@ struct AVLTree:
         var changed: Bool = True
         var node: Pointer[Node] = startNode
         while node and changed:
-            var old_height: Int = node.load().height
-            var tmp: Node = node.load()
-            tmp.height = (node.load().max_children_height() + 1 if
-                           (node.load().rightChild or node.load().leftChild) else 0)
-            node.store(tmp)
-            changed = node.load().height != old_height
-            node = node.load().parent
+            var old_height: Int = node[].height
+            node[].height = (node[].max_children_height() + 1 if
+                           (node[].rightChild or node[].leftChild) else 0)
+            changed = node[].height != old_height
+            node = node[].parent
 
     fn find_biggest(self, start_node: Pointer[Node]) -> Pointer[Node]:
         var node: Pointer[Node] = start_node
-        while node.load().rightChild:
-            node = node.load().rightChild
+        while node[].rightChild:
+            node = node[].rightChild
         return node
 
     fn find_smallest(self, start_node: Pointer[Node]) -> Pointer[Node]:
         var node: Pointer[Node] = start_node
-        while node.load().leftChild:
-            node = node.load().leftChild
+        while node[].leftChild:
+            node = node[].leftChild
         return node
 
     fn as_list(self, type: Int = 1) -> List[Int]:
@@ -216,87 +213,70 @@ struct AVLTree:
             return self.preorder(self.rootNode)
         elif type == 1:
             return self.inorder(self.rootNode)
-        else:
-            return self.postorder(self.rootNode)
+        return self.postorder(self.rootNode)
 
     fn preorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
-        retlst.append(node.load().key)
-        if node.load().leftChild:
-            retlst = self.preorder(node.load().leftChild, retlst)
-        if node.load().rightChild:
-            retlst = self.preorder(node.load().rightChild, retlst)
+        retlst.append(node[].key)
+        if node[].leftChild:
+            retlst = self.preorder(node[].leftChild, retlst)
+        if node[].rightChild:
+            retlst = self.preorder(node[].rightChild, retlst)
         return retlst
 
     fn inorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
-        if node.load().leftChild:
-            retlst = self.inorder(node.load().leftChild, retlst)
-        retlst.append(node.load().key)
-        if node.load().rightChild:
-            retlst = self.inorder(node.load().rightChild, retlst)
+        if node[].leftChild:
+            retlst = self.inorder(node[].leftChild, retlst)
+        retlst.append(node[].key)
+        if node[].rightChild:
+            retlst = self.inorder(node[].rightChild, retlst)
         return retlst
 
     fn postorder(self, node: Pointer[Node], owned retlst: List[Int] = List[Int]()) -> List[Int]:
-        if node.load().leftChild:
-            retlst = self.postorder(node.load().leftChild, retlst)
-        if node.load().rightChild:
-            retlst = self.postorder(node.load().rightChild, retlst)
-        retlst.append(node.load().key)
+        if node[].leftChild:
+            retlst = self.postorder(node[].leftChild, retlst)
+        if node[].rightChild:
+            retlst = self.postorder(node[].rightChild, retlst)
+        retlst.append(node[].key)
         return retlst
 
     fn add_as_child(inout self, parent_node: Pointer[Node], child_node: Pointer[Node]):
         var node_to_rebalance: Pointer[Node] = Pointer[Node].get_null()
-        var tmp: Node = parent_node.load()
-        tmp.size += 1
-        parent_node.store(tmp)
-        if child_node.load().key < parent_node.load().key:
-            if not parent_node.load().leftChild:
-                tmp = parent_node.load()
-                tmp.leftChild = child_node
-                parent_node.store(tmp)
-
-                tmp = child_node.load()
-                tmp.parent = parent_node
-                child_node.store(tmp)
-                if parent_node.load().height == 0: # in this case trees height could change
+        parent_node[].size += 1
+        if child_node[].key < parent_node[].key:
+            if not parent_node[].leftChild:
+                parent_node[].leftChild = child_node
+                child_node[].parent = parent_node
+                if parent_node[].height == 0: # in this case trees height could change
                     var node: Pointer[Node] = parent_node
                     while node:
-                        tmp = node.load()
-                        tmp.height = tmp.max_children_height() + 1
-                        node.store(tmp)
-                        if not node.load().balance() in Set[Int](-1, 0, 1):
+                        node[].height = node[].max_children_height() + 1
+                        if not node[].balance() in Set[Int](-1, 0, 1):
                             node_to_rebalance = node
                             break 
-                        node = node.load().parent
+                        node = node[].parent
             else:
-                self.add_as_child(parent_node.load().leftChild, child_node)
+                self.add_as_child(parent_node[].leftChild, child_node)
         else:
-            if not parent_node.load().rightChild:
-                tmp = parent_node.load()
-                tmp.rightChild = child_node
-                parent_node.store(tmp)
-
-                tmp = child_node.load()
-                tmp.parent = parent_node
-                child_node.store(tmp)
-                if parent_node.load().height == 0: # in this case trees height could change
+            if not parent_node[].rightChild:
+                parent_node[].rightChild = child_node
+                child_node[].parent = parent_node
+                if parent_node[].height == 0: # in this case trees height could change
                     var node: Pointer[Node] = parent_node
                     while node:
-                        tmp = node.load()
-                        tmp.height = tmp.max_children_height() + 1
-                        node.store(tmp)
-                        if not node.load().balance() in Set[Int](-1, 0, 1):
+                        node[].height = node[].max_children_height() + 1
+                        if not node[].balance() in Set[Int](-1, 0, 1):
                             node_to_rebalance = node
                             break 
-                        node = node.load().parent
+                        node = node[].parent
             else:
-                self.add_as_child(parent_node.load().rightChild, child_node)
+                self.add_as_child(parent_node[].rightChild, child_node)
 
         if node_to_rebalance:
             self.rebalance(node_to_rebalance)
 
     fn insert(inout self, key: Int):
         var new_node = Pointer[Node].alloc(1)
-        new_node.store(Node(key))
+        new_node[] = Node(key)
         if not self.rootNode:
             self.rootNode = new_node
             debug_assert(self.elements_count == 0, 'Wrong elements_count')
@@ -307,22 +287,16 @@ struct AVLTree:
                 self.add_as_child(self.rootNode, new_node)
 
     fn remove_branch(inout self, inout node: Pointer[Node]):
-        var parent: Pointer[Node] = node.load().parent
+        var parent: Pointer[Node] = node[].parent
         if (parent):
-            var tmp: Node = parent.load()
-            if tmp.leftChild == node:
-                tmp.leftChild = node.load().rightChild or node.load().leftChild
+            if parent[].leftChild == node:
+                parent[].leftChild = node[].rightChild or node[].leftChild
             else:
-                tmp.rightChild = node.load().rightChild or node.load().leftChild
-            parent.store(tmp)
-            if node.load().leftChild:
-                tmp = node.load().leftChild.load()
-                tmp.parent = parent
-                node.load().leftChild.store(tmp)
+                parent[].rightChild = node[].rightChild or node[].leftChild
+            if node[].leftChild:
+                node[].leftChild[].parent = parent
             else:
-                tmp = node.load().rightChild.load()
-                tmp.parent = parent
-                node.load().rightChild.store(tmp)
+                node[].rightChild[].parent = parent
             self.recompute_heights(parent)
         node.free()
        
@@ -330,19 +304,17 @@ struct AVLTree:
         node = parent
         while (node):
             self.resize(node)
-            if not node.load().balance() in Set[Int](-1, 0, 1):
+            if not node[].balance() in Set[Int](-1, 0, 1):
                 self.rebalance(node)
-            node = node.load().parent
+            node = node[].parent
 
     fn remove_leaf(inout self, inout node: Pointer[Node]):
-        var parent: Pointer[Node] = node.load().parent
+        var parent: Pointer[Node] = node[].parent
         if (parent):
-            var tmp: Node = parent.load()
-            if tmp.leftChild == node:
-                tmp.leftChild = Pointer[Node].get_null()
+            if parent[].leftChild == node:
+                parent[].leftChild = Pointer[Node].get_null()
             else:
-                tmp.rightChild = Pointer[Node].get_null()
-            parent.store(tmp)
+                parent[].rightChild = Pointer[Node].get_null()
             self.recompute_heights(parent)
         else:
             self.rootNode = Pointer[Node].get_null()
@@ -352,143 +324,106 @@ struct AVLTree:
         node = parent
         while (node):
             self.resize(node)            
-            if not node.load().balance() in Set[Int](-1, 0, 1):
+            if not node[].balance() in Set[Int](-1, 0, 1):
                 self.rebalance(node)
-            node = node.load().parent
+            node = node[].parent
 
     fn remove(inout self, key: Int):
         var node: Pointer[Node] = self.find(key)
 
         if node:
             self.elements_count -= 1
-            if node.load().is_leaf():
+            if node[].is_leaf():
                 self.remove_leaf(node)
-            elif (node.load().leftChild.__bool__()) ^ (node.load().rightChild.__bool__()):
+            elif (node[].leftChild.__bool__()) ^ (node[].rightChild.__bool__()):
                 self.remove_branch(node)
             else:
                 self.swap_with_successor_and_remove(node)
 
     fn swap_with_successor_and_remove(inout self, inout node: Pointer[Node]):
-        var successor: Pointer[Node] = self.find_smallest(node.load().rightChild)
+        var successor: Pointer[Node] = self.find_smallest(node[].rightChild)
         self.swap_nodes(node, successor)
-        if node.load().height == 0:
+        if node[].height == 0:
             self.remove_leaf(node)
         else:
             self.remove_branch(node)
 
     fn swap_nodes(inout self, node1: Pointer[Node], node2: Pointer[Node]):
-        var parent1: Pointer[Node] = node1.load().parent
-        var leftChild1: Pointer[Node] = node1.load().leftChild
-        var rightChild1: Pointer[Node] = node1.load().rightChild
-        var parent2: Pointer[Node] = node2.load().parent
-        var leftChild2: Pointer[Node] = node2.load().leftChild
-        var rightChild2: Pointer[Node] = node2.load().rightChild
+        var parent1: Pointer[Node] = node1[].parent
+        var leftChild1: Pointer[Node] = node1[].leftChild
+        var rightChild1: Pointer[Node] = node1[].rightChild
+        var parent2: Pointer[Node] = node2[].parent
+        var leftChild2: Pointer[Node] = node2[].leftChild
+        var rightChild2: Pointer[Node] = node2[].rightChild
 
         # swap heights
-        var tmp1: Node = node1.load()
-        var tmp2: Node = node2.load()
-        var tmpInt: Int = tmp1.height
-        tmp1.height = tmp2.height
-        tmp2.height = tmpInt
+        var tmpInt: Int = node1[].height
+        node1[].height = node2[].height
+        node2[].height = tmpInt
 
         #swap sizes
-        tmpInt = tmp1.size
-        tmp1.size = tmp2.size
-        tmp2.size = tmpInt
+        tmpInt = node1[].size
+        node1[].size = node2[].size
+        node2[].size = tmpInt
 
-        var tmp: Node
         if parent1:
-            tmp = parent1.load()
-            if tmp.leftChild == node1:
-                tmp.leftChild = node2
+            if parent1[].leftChild == node1:
+                parent1[].leftChild = node2
             else:
-                tmp.rightChild = node2
-            parent1.store(tmp)
-            tmp2.parent = parent1
+                parent1[].rightChild = node2
+            node2[].parent = parent1
         else:
             self.rootNode = node2
-            tmp2.parent = Pointer[Node].get_null()
+            node2[].parent = Pointer[Node].get_null()
 
-        tmp2.leftChild = leftChild1
-        tmp = leftChild1.load()
-        tmp.parent = node2
-        leftChild1.store(tmp)
+        node2[].leftChild = leftChild1
+        leftChild1[].parent = node2
 
-        tmp1.leftChild = leftChild2
-        tmp1.rightChild = rightChild2
+        node1[].leftChild = leftChild2
+        node1[].rightChild = rightChild2
         if rightChild2:
-            tmp = rightChild2.load()
-            tmp.parent = node1
-            rightChild2.store(tmp)
+            rightChild2[].parent = node1
             
         if not (parent2 == node1):
-            tmp2.rightChild = rightChild1
-            tmp = rightChild1.load()
-            tmp.parent = node2
-            rightChild1.store(tmp)
-
-            tmp = parent2.load()
-            tmp.leftChild = node1
-            parent2.store(tmp)
-            tmp1.parent = parent2
+            node2[].rightChild = rightChild1
+            rightChild1[].parent = node2
+            parent2[].leftChild = node1
+            node1[].parent = parent2
         else:
-            tmp2.rightChild = node1
-            tmp1.parent = node2
-
-        node1.store(tmp1)
-        node2.store(tmp2)
+            node2[].rightChild = node1
+            node1[].parent = node2
 
     fn resize(self, node: Pointer[Node]):
-        var tmp: Node = node.load()
-        tmp.size = 1
-        if tmp.rightChild:
-            tmp.size += tmp.rightChild.load().size
-        if tmp.leftChild:
-            tmp.size += tmp.leftChild.load().size
-        node.store(tmp)
+        node[].size = 1
+        if node[].rightChild:
+            node[].size += node[].rightChild[].size
+        if node[].leftChild:
+            node[].size += node[].leftChild[].size
         
     fn rebalance(inout self, node_to_rebalance: Pointer[Node]):
         self.rebalance_count += 1
         var A: Pointer[Node] = node_to_rebalance
-        var tmpA: Node = A.load()
-        var F: Pointer[Node] = tmpA.parent
-        var tmpF: Node
-        var tmp: Node
-        var tmpB: Node
-        var tmpC: Node
+        var F: Pointer[Node] = A[].parent
         
-        if node_to_rebalance.load().balance() == -2:
-            if node_to_rebalance.load().rightChild.load().balance() <= 0:
+        if node_to_rebalance[].balance() == -2:
+            if node_to_rebalance[].rightChild[].balance() <= 0:
                 """Rebalance, ase RRC """
-                var B: Pointer[Node] = tmpA.rightChild
-                tmpB = B.load()
-                var C: Pointer[Node] = tmpB.rightChild
-                tmpA.rightChild = tmpB.leftChild
-                A.store(tmpA)
-                tmpA = A.load()
-                if tmpA.rightChild:
-                    tmp = tmpA.rightChild.load()
-                    tmp.parent = A
-                    tmpA.rightChild.store(tmp)
-                tmpB.leftChild = A
-                B.store(tmpB)
-                tmpB = B.load()
-                tmpA.parent = B
-                A.store(tmpA)
+                var B: Pointer[Node] = A[].rightChild
+                var C: Pointer[Node] = B[].rightChild
+                A[].rightChild = B[].leftChild
+                if A[].rightChild:
+                    A[].rightChild[].parent = A
+                B[].leftChild = A
+                A[].parent = B
                 if not F:
                     self.rootNode = B
-                    tmp = self.rootNode.load()
-                    tmp.parent = Pointer[Node].get_null()
-                    self.rootNode.store(tmp)
+                    self.rootNode[].parent = Pointer[Node].get_null()
                 else:
-                    tmpF = F.load()
-                    if tmpF.rightChild == A:
-                        tmpF.rightChild = B
+                    if F[].rightChild == A:
+                        F[].rightChild = B
                     else:
-                        tmpF.leftChild = B
-                    F.store(tmpF)
-                    tmpB.parent = F
-                    B.store(tmpB)
+                        F[].leftChild = B
+                    B[].parent = F
             
                 self.recompute_heights(A)                                                                                        
                 self.resize(A)
@@ -496,48 +431,27 @@ struct AVLTree:
                 self.resize(C)
             else:
                 """Rebalance, case RLC """
-                var B: Pointer[Node] = tmpA.rightChild
-                tmpB = B.load()
-                var C: Pointer[Node] = tmpB.leftChild
-                tmpC = C.load()
-                tmpB.leftChild = tmpC.rightChild
-                B.store(tmpB)
-                tmpB = B.load()
-                if tmpB.leftChild:
-                    tmp = tmpB.leftChild.load()
-                    tmp.parent = B
-                    tmpB.leftChild.store(tmp)
-                tmpA.rightChild = tmpC.leftChild
-                A.store(tmpA)
-                tmpA = A.load()
-                if tmpA.rightChild:
-                    tmp = tmpA.rightChild.load()
-                    tmp.parent = A
-                    tmpA.rightChild.store(tmp)
-                tmpC.rightChild = B
-                C.store(tmpC)
-                tmpC = C.load()
-                tmpB.parent = C
-                B.store(tmpB)
-                tmpC.leftChild = A
-                C.store(tmpC)
-                tmpC = C.load()
-                tmpA.parent = C
-                A.store(tmpA)
+                var B: Pointer[Node] = A[].rightChild
+                var C: Pointer[Node] = B[].leftChild
+                B[].leftChild = C[].rightChild
+                if B[].leftChild:
+                    B[].leftChild[].parent = B
+                A[].rightChild = C[].leftChild
+                if A[].rightChild:
+                    A[].rightChild[].parent = A
+                C[].rightChild = B
+                B[].parent = C
+                C[].leftChild = A
+                A[].parent = C
                 if not F:
                     self.rootNode = C
-                    tmp = self.rootNode.load()
-                    tmp.parent = Pointer[Node].get_null()
-                    self.rootNode.store(tmp)
+                    self.rootNode[].parent = Pointer[Node].get_null()
                 else:
-                    tmpF = F.load()
-                    if tmpF.rightChild == A:
-                        tmpF.rightChild = C
+                    if F[].rightChild == A:
+                        F[].rightChild = C
                     else:
-                        tmpF.leftChild = C
-                    F.store(tmpF)
-                    tmpC.parent = F
-                    C.store(tmpC)
+                        F[].leftChild = C
+                    C[].parent = F
                 
                 self.recompute_heights(A)
                 self.recompute_heights(B)
@@ -546,37 +460,24 @@ struct AVLTree:
                 self.resize(C)
                 
         else:
-            if node_to_rebalance.load().leftChild.load().balance() >= 0:
+            if node_to_rebalance[].leftChild[].balance() >= 0:
                 """Rebalance, case LLC """
-                var B: Pointer[Node] = tmpA.leftChild
-                tmpB = B.load()
-                var C: Pointer[Node] = tmpB.leftChild
-                tmpA.leftChild = tmpB.rightChild
-                A.store(tmpA)
-                tmpA = A.load()
-                if (tmpA.leftChild):
-                    tmp = tmpA.leftChild.load()
-                    tmp.parent = A
-                    tmpA.leftChild.store(tmp)
-                tmpB.rightChild = A
-                B.store(tmpB)
-                tmpB = B.load()
-                tmpA.parent = B
-                A.store(tmpA)
+                var B: Pointer[Node] = A[].leftChild
+                var C: Pointer[Node] = B[].leftChild
+                A[].leftChild = B[].rightChild
+                if (A[].leftChild):
+                    A[].leftChild[].parent = A
+                B[].rightChild = A
+                A[].parent = B
                 if not F:
                     self.rootNode = B
-                    tmp = self.rootNode.load()
-                    tmp.parent = Pointer[Node].get_null()
-                    self.rootNode.store(tmp)
+                    self.rootNode[].parent = Pointer[Node].get_null()
                 else:
-                    tmpF = F.load()
-                    if tmpF.rightChild == A:
-                        tmpF.rightChild = B
+                    if F[].rightChild == A:
+                        F[].rightChild = B
                     else:
-                        tmpF.leftChild = B
-                    F.store(tmpF)
-                    tmpB.parent = F
-                    B.store(tmpB)
+                        F[].leftChild = B
+                    B[].parent = F
                  
                 self.recompute_heights(A)
                 self.resize(A)
@@ -585,48 +486,27 @@ struct AVLTree:
                 
             else:
                 """Rebalance, case LRC """
-                var B: Pointer[Node] = tmpA.leftChild
-                tmpB = B.load()
-                var C: Pointer[Node] = tmpB.rightChild
-                tmpC = C.load()
-                tmpA.leftChild = tmpC.rightChild
-                A.store(tmpA)
-                tmpA = A.load()
-                if tmpA.leftChild:
-                    tmp = tmpA.leftChild.load()
-                    tmp.parent = A
-                    tmpA.leftChild.store(tmp)
-                tmpB.rightChild = tmpC.leftChild
-                B.store(tmpB)
-                tmpB = B.load()
-                if tmpB.rightChild:
-                    tmp = tmpB.rightChild.load()
-                    tmp.parent = B
-                    tmpB.rightChild.store(tmp)
-                tmpC.leftChild = B
-                C.store(tmpC)
-                tmpC = C.load()
-                tmpB.parent = C
-                B.store(tmpB)
-                tmpC.rightChild = A
-                C.store(tmpC)
-                tmpC = C.load()
-                tmpA.parent = C
-                A.store(tmpA)
+                var B: Pointer[Node] = A[].leftChild
+                var C: Pointer[Node] = B[].rightChild
+                A[].leftChild = C[].rightChild
+                if A[].leftChild:
+                    A[].leftChild[].parent = A
+                B[].rightChild = C[].leftChild
+                if B[].rightChild:
+                    B[].rightChild[].parent = B
+                C[].leftChild = B
+                B[].parent = C
+                C[].rightChild = A
+                A[].parent = C
                 if not F:
                     self.rootNode = C
-                    tmp = self.rootNode.load()
-                    tmp.parent = Pointer[Node].get_null()
-                    self.rootNode.store(tmp)
+                    self.rootNode[].parent = Pointer[Node].get_null()
                 else:
-                    tmpF = F.load()
-                    if (tmpF.rightChild == A):
-                        tmpF.rightChild = C
+                    if (F[].rightChild == A):
+                        F[].rightChild = C
                     else:
-                        tmpF.leftChild = C
-                    F.store(tmpF)
-                    tmpC.parent = F
-                    C.store(tmpC)
+                        F[].leftChild = C
+                    C[].parent = F
                 
                 self.recompute_heights(A)
                 self.recompute_heights(B)
@@ -637,20 +517,20 @@ struct AVLTree:
     fn findkth(self, k: Int, owned root: Pointer[Node] = Pointer[Node].get_null()) -> Int:
         if not root:
             root = self.rootNode
-        debug_assert(k <= root.load().size, 'Error, k more then the size of BST')
-        var leftsize: Int = 0 if not root.load().leftChild else root.load().leftChild.load().size
+        debug_assert(k <= root[].size, 'Error, k more then the size of BST')
+        var leftsize: Int = 0 if not root[].leftChild else root[].leftChild[].size
         if leftsize >= k:
-            return self.findkth(k, root.load().leftChild)
+            return self.findkth(k, root[].leftChild)
         elif leftsize == (k - 1):
-            return root.load().key
+            return root[].key
         else:
-            return self.findkth(k - leftsize - 1, root.load().rightChild)    
+            return self.findkth(k - leftsize - 1, root[].rightChild)    
 
     fn __str__(self, owned start_node: Pointer[Node] = Pointer[Node].get_null()) -> String:
         if not start_node:
             start_node = self.rootNode
         var space_symbol: String = r" "
-        var spaces_count: Int = 4 * 2**(self.rootNode.load().height)
+        var spaces_count: Int = 4 * 2**(self.rootNode[].height)
         var out_string: String = r""
         var initial_spaces_string: String = ""
         for i in range(spaces_count):
@@ -658,7 +538,7 @@ struct AVLTree:
         initial_spaces_string += "\n"
         if not start_node:
             return "Tree is empty"
-        var height: Int = 2 ** (self.rootNode.load().height)
+        var height: Int = 2 ** (self.rootNode[].height)
         var level = List[Pointer[Node]]()
         level.append(start_node)
         var notNullCount: Int = 1
@@ -669,7 +549,7 @@ struct AVLTree:
                 if (level[i]):
                     var j: Int = int((2 * i + 1) * spaces_count / (2 * len(level)))
                     level_string = level_string[:j] + (
-                        level[i].load().__str__() if level[i] else space_symbol) + level_string[j +
+                        level[i][] if level[i] else space_symbol) + level_string[j +
                                                                             1:]
 
             out_string += level_string
@@ -678,11 +558,11 @@ struct AVLTree:
             notNullCount = 0
             for node in level:
                 if node[]:
-                    level_next.append(node[].load().leftChild)
-                    level_next.append(node[].load().rightChild)
-                    if node[].load().leftChild:
+                    level_next.append(node[][].leftChild)
+                    level_next.append(node[][].rightChild)
+                    if node[][].leftChild:
                         notNullCount += 1
-                    if node[].load().rightChild:
+                    if node[][].rightChild:
                         notNullCount += 1
                 else:
                     level_next.append(Pointer[Node].get_null())
@@ -694,10 +574,10 @@ struct AVLTree:
                         var shift: Int = spaces_count//(2*len(level))
                         var j: Int = (2 * i + 1) * shift
                         level_string = level_string[:j - w - 1] + (
-                            '/' if level[i].load().leftChild else
+                            '/' if level[i][].leftChild else
                             space_symbol) + level_string[j - w:]
                         level_string = level_string[:j + w + 1] + (
-                            '\\' if level[i].load().rightChild else
+                            '\\' if level[i][].rightChild else
                             space_symbol) + level_string[j + w:]
                 out_string += level_string
             height = height // 2
