@@ -1,6 +1,5 @@
 from python import Python
 from time import now
-import math
 
 fn main():
     alias wordCount: Int = 22  # Number of words
@@ -43,9 +42,9 @@ fn main():
                 score += 1
             if i == txtSize - 1:
                 break
-        var letterCount: Int = math.min(len(input), txtSize)
-        var wpm: Int = int(math.round((letterCount / 5) / (t / 60)))
-        var acc: Int = int(math.round(score / txtSize * 100))
+        var letterCount: Int = min(len(input), txtSize)
+        var wpm: Int = int(round((letterCount / 5) / (t / 60)))
+        var acc: Int = int(round(score / txtSize * 100))
         print ("WPM:", wpm)
         print ("Accuracy: " + str(acc) + "%")
     except:

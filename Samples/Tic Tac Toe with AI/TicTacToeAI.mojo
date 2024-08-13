@@ -12,7 +12,7 @@ fn computerMove(inout board: InlinedFixedVector[StringLiteral], borrowed pSymbol
     for i in range(9):
         if board[i] == " ":
             board[i] = turn
-            var score: Int = miniMax(board, pSymbol, False)
+            var score: Int = mini(board, pSymbol)
             board[i] = " "
 
             if score > bestScore:
@@ -21,8 +21,7 @@ fn computerMove(inout board: InlinedFixedVector[StringLiteral], borrowed pSymbol
 
     insertValue(board, bestMove)
 
-
-fn miniMax(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral, borrowed maximizing: Bool) raises -> Int:
+fn Max(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral) raises -> Int:
     if checkForWin(board, turn):
         return 1
     elif checkForWin(board, pSymbol):
@@ -30,33 +29,39 @@ fn miniMax(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: Str
     elif checkForDraw(board):
         return 0
 
-    if maximizing:
-        var bestScore: Int = -10
+    var bestScore: Int = -10
 
-        for i in range(9):
-            if board[i] == " ":
-                board[i] = turn
-                var score: Int = miniMax(board, pSymbol, False)
-                board[i] = " "
+    for i in range(9):
+        if board[i] == " ":
+            board[i] = turn
+            var score: Int = mini(board, pSymbol)
+            board[i] = " "
 
-                if score > bestScore:
-                    bestScore = score
+            if score > bestScore:
+                bestScore = score
 
-        return bestScore
-    else:
-        var bestScore: Int = 10
+    return bestScore
 
-        for i in range(9):
-            if board[i] == " ":
-                board[i] = pSymbol
-                var score: Int = miniMax(board, pSymbol, True)
-                board[i] = " "
+fn mini(owned board: InlinedFixedVector[StringLiteral], borrowed pSymbol: StringLiteral) raises -> Int:
+    if checkForWin(board, turn):
+        return 1
+    elif checkForWin(board, pSymbol):
+        return -1
+    elif checkForDraw(board):
+        return 0
 
-                if score < bestScore:
-                    bestScore = score
+    var bestScore: Int = 10
 
-        return bestScore
+    for i in range(9):
+        if board[i] == " ":
+            board[i] = pSymbol
+            var score: Int = Max(board, pSymbol)
+            board[i] = " "
 
+            if score < bestScore:
+                bestScore = score
+
+    return bestScore
 
 fn displayBoard(borrowed board: InlinedFixedVector[StringLiteral]) raises:
     print(str(board[0]) + "|" + str(board[1]) + "|" + str(board[2]))
@@ -65,7 +70,6 @@ fn displayBoard(borrowed board: InlinedFixedVector[StringLiteral]) raises:
     print("-+-+-")
     print(str(board[6]) + "|" + str(board[7]) + "|" + str(board[8]))
     print('---------------------------------------')
-
 
 fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position: Int) raises:
     if board[position] == " ":
@@ -86,14 +90,12 @@ fn insertValue(inout board: InlinedFixedVector[StringLiteral], borrowed position
     else:
         print("Error: position is already occupied.")
 
-
 fn checkForDraw(owned board: InlinedFixedVector[StringLiteral]) -> Bool:
     for i in range(9):
         if board[i] == " ":
             return False
 
     return True
-
 
 fn checkForWin(borrowed board: InlinedFixedVector[StringLiteral], borrowed cPlayer: StringLiteral) raises -> Bool:
     # horizontal 1

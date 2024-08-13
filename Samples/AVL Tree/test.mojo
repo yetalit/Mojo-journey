@@ -3,7 +3,7 @@ from AVLTree import AVLTree
 fn main() raises:
     var tree = AVLTree([10, 20, 30, 40, 50])
     random.seed()
-    for i in range(15):
+    for _ in range(15):
         tree.insert(int(random.random_ui64(1, 999)))
     print(tree.__str__())
     tree.remove(tree.findkth(18))
