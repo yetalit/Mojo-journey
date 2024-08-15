@@ -74,6 +74,6 @@ fn main():
     # SIMD: Single Instruction Multiple Data
     # simd width must be power of 2
     alias x = SIMD[DType.float64, 8](2, 4, 8, 16, 32, 64, 128, 256)
-    print(x.__len__())
+    print(len(x))
     print(0.25 * x)
     print(add(x,x))
