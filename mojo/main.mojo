@@ -10,7 +10,7 @@ from python import Python
 from mypackage.mymodule import MyPair1
 from testpack.mymodule import MyPair2
 
-struct myClass:
+struct MyClass:
     var prop1: Int
     var prop2: String
     var prop3: Bool
@@ -34,7 +34,7 @@ struct myClass:
     fn setProp3 (inout self, value: Bool):
         self.prop3 = value
         
-
+# [] here is used to denote generic parameters that apply to the entire function
 fn add[datatype: DType, length: Int](a: SIMD[datatype, length], b: SIMD[datatype, length]) -> SIMD[datatype, length]:
     return a + b
 
@@ -56,15 +56,15 @@ fn main():
     except:
         print('Error importing modules!')
 
-    var myclass = myClass()
-    print(myclass.prop1, myclass.prop2, myclass.prop3)
+    var myClass = MyClass()
+    print(myClass.prop1, myClass.prop2, myClass.prop3)
     alias p1: Int = 2
-    alias p2: String = 'helloooo'
+    alias p2: String = 'hellooo'
     alias p3: Bool = True
-    myClass.setProp1(myclass, p1)
-    myClass.setProp2(myclass, p2)
-    myClass.setProp3(myclass, p3)
-    print(myclass.prop1, myclass.prop2, myclass.prop3)
+    myClass.setProp1(p1)
+    myClass.setProp2(p2)
+    myClass.setProp3(p3)
+    print(myClass.prop1, myClass.prop2, myClass.prop3)
 
     alias mine1 = MyPair1(4, 8)
     mine1.dump()
