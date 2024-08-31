@@ -6,23 +6,22 @@ fn main():
 	print('Rock, Paper, Scissors - Shoot!')
 	try:
 		var py = Python.import_module('builtins')
-		var np = Python.import_module('numpy')
 		
-		var choices = np.array(['r', 'p', 's'])
+		alias choices = List[String]('r', 'p', 's')
 		
 		while True:
-			var user_choice: String = str(py.input('Choose your weapon'
+			var user_choice = str(py.input('Choose your weapon'
 							   ' [r]ock, [p]aper, or [s]cissors: '))
 			
-			if user_choice != 'r' and user_choice != 'p' and user_choice != 's':
+			if not user_choice in choices:
 				print('Please choose one of these letters:')
 				print('[r]ock, [p]aper, or [s]cissors')
 				continue
 
 			print('You chose:', user_choice)
 
-			var randNum: UInt64 = random.random_ui64(0, 2)  # Generate an unsigned random number between 0 to 2
-			var opp_choice: String = choices[randNum]
+			var randNum = int(random.random_ui64(0, 2))  # Generate an unsigned random number between 0 to 2
+			var opp_choice = choices[randNum]
 			print('I chose:', opp_choice)
 
 			if opp_choice == user_choice:
@@ -37,7 +36,7 @@ fn main():
 				print('You win!')
 
 			while True:
-				var response: String = str(py.input('Do you wish to play again? [y/n]: '))
+				var response = str(py.input('Do you wish to play again? [y/n]: '))
 				if response == 'y':
 					break
 				elif response == 'n':

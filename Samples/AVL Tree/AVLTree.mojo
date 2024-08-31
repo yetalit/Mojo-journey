@@ -313,14 +313,10 @@ struct AVLTree:
         var rightChild2: UnsafePointer[Node] = node2[].rightChild
 
         # swap heights
-        var tmpInt: Int = node1[].height
-        node1[].height = node2[].height
-        node2[].height = tmpInt
+        node1[].height, node2[].height = node2[].height, node1[].height
 
         #swap sizes
-        tmpInt = node1[].size
-        node1[].size = node2[].size
-        node2[].size = tmpInt
+        node1[].size, node2[].size = node2[].size, node1[].size
 
         if parent1:
             if parent1[].leftChild == node1:
